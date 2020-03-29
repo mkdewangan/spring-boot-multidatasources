@@ -50,7 +50,8 @@ public class MultiDataSourceController {
 	@PostMapping("/patient")
 	public String create(@Valid @RequestBody Patient patient) {
 		
-		return service.create(patient);
+		//return service.create2(patient);
+		return service.create3(patient);
 	}
 
 }

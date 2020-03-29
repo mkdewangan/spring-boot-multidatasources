@@ -6,6 +6,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -38,7 +39,7 @@ public class MultiDataSourceService {
 		return patientRepo.findAll();
 	}
 
-	
+	@Transactional
 	public String create(Patient patient) {
 		
 		patientRepo.save(patient);
@@ -54,5 +55,43 @@ public class MultiDataSourceService {
 		return "Success";
 	}
 	
+	
+	//@Transactional
+	public String create2(Patient patient) {
+		
+		patientRepo.save(patient);
+		
+		if(true) {
+			throw new RuntimeException("Some exception came after mysql persist. No rollback for mysql persist.");
+		}
+		PatientPg patientPg = new PatientPg();
+		
+		patientPg.setPatientName(patient.getPatientName());
+		
+		patientPg.setPaitientContact(patient.getPatientContact());
+		
+		patientRepoPg.save(patientPg);
+
+		return "Success";
+	}
+	
+	@Transactional  
+	public String create3(Patient patient) {
+		
+		patientRepo.save(patient);
+		
+		if(true) {
+			throw new RuntimeException("Some exception came after mysql persist. MySQL persist should rollback.");
+		}
+		PatientPg patientPg = new PatientPg();
+		
+		patientPg.setPatientName(patient.getPatientName());
+		
+		patientPg.setPaitientContact(patient.getPatientContact());
+		
+		patientRepoPg.save(patientPg);
+
+		return "Success";
+	}
 
 }
